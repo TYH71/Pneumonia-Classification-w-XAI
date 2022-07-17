@@ -118,7 +118,8 @@ if __name__ == '__main__':
     preprocess_transform = get_preprocess_transform()
     
     st.title("Model Agnostic w/ LIME")
-    st.info("LIME: Local Interpretabel Model-Agnostic Explanations")
+    
+    st.info("LIME: Local Interpretabel Model-Agnostic Explanation\nLIME is an algorithm that can explain individual predictions of any black-box classifier or regressor, by approximateing it locally with an interpretable method.")
     
     # Creating a sidebar.
     with st.sidebar:
