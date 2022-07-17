@@ -5,6 +5,7 @@ import streamlit as st
 from PIL import Image
 from skimage.segmentation import mark_boundaries
 import os
+import random
 
 # import torch modules
 import torch
@@ -17,6 +18,11 @@ from torchinfo import summary
 
 # import lime modules
 from lime import lime_image
+
+# Setting seed
+torch.manual_seed(42)
+random.seed(42)
+np.random.seed(42)
 
 # Setting the page title, icon, layout, and initial sidebar state.
 st.set_page_config(
