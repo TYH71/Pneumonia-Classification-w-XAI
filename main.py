@@ -124,14 +124,14 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     )
 
 @st.cache
-def generate_img_boundary(explanation, positive, max_features):
+def generate_img_boundary(explanation, positive, max_features, hide_rest):
     color = np.array([0, 255, 0] if positive else [255, 0, 0]) / 255.
     temp, mask = explanation.get_image_and_mask(
         explanation.top_labels[0], 
         positive_only=positive, 
         negative_only=not positive, 
         num_features=max_features, 
-        hide_rest=False
+        hide_rest=hide_rest
     )
     img_boundary = mark_boundaries(temp/255.0, mask, color=color)
     return img_boundary
@@ -150,6 +150,7 @@ if __name__ == '__main__':
         st.header('Parameters Settings')
         selected_class = st.selectbox("Select Class", ['PNEUMONIA', 'NORMAL'])
         max_features = st.slider("Max Features", 1, 10, 5)
+        hide_rest = st.select_slider("Hide Rest", [True, False], 1)
     
     # Loading the model and displaying the model summary.
     with st.expander('Model Summary'):
@@ -181,11 +182,11 @@ if __name__ == '__main__':
         
         # positive explanations
         with col2:
-            pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features)
+            pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
             st.image(pos_img_boundary, caption="Positive Explanation; Predicted: {}".format(classes[explanation.top_labels[0]]))
             
         # negative explanations
         with col3:
-            neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features)
+            neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
             st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(classes[explanation.top_labels[0]]))
       
