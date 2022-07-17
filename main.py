@@ -115,7 +115,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         batch_predict, # inference function
         top_labels = 2,
         random_seed = 42,
-        num_samples = 100 # number of images that will be sent to classification function
+        num_samples = 200 # number of images that will be sent to classification function
     )
 
 if __name__ == '__main__':
