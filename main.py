@@ -150,7 +150,7 @@ if __name__ == '__main__':
         st.header('Parameters Settings')
         selected_class = st.selectbox("Select Class", ['PNEUMONIA', 'NORMAL'])
         max_features = st.slider("Max Features", 1, 10, 5)
-        hide_rest = st.select_slider("Hide Rest", [True, False], 2)
+        hide_rest = st.select_slider("Hide Rest", [False, True])
     
     # Loading the model and displaying the model summary.
     with st.expander('Model Summary'):
