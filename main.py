@@ -49,6 +49,7 @@ def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     model_ft.load_state_dict(torch.load(weights_path))
     return model_ft
 
+@st.cache
 def get_image(path):
     """
     It opens the image file, converts it to RGB, and returns the image
@@ -60,6 +61,7 @@ def get_image(path):
         with Image.open(f) as img:
             return img.convert('RGB')
 
+@st.cache
 def get_pil_transform(): 
     """
     > It takes an image, resizes it to 256x256, and then crops it to 224x224
@@ -70,6 +72,7 @@ def get_pil_transform():
         T.CenterCrop(224)
     ])
     
+@st.cache
 def get_preprocess_transform():
     """
     It takes an image as input, converts it to a tensor, and normalizes it
@@ -81,6 +84,7 @@ def get_preprocess_transform():
         T.Normalize(**norm_cfg)
     ])
     
+@st.cache
 def batch_predict(images):
     """
     > It takes a list of images, preprocesses them, and then runs them through the model to get a
