@@ -137,8 +137,8 @@ if __name__ == '__main__':
 
 
     image_path = dict(
-        NORMAL = 'assets\\image\\NORMAL2-IM-1440-0001.jpeg',
-        PNEUMONIA = 'assets\\image\\person1951_bacteria_4882.jpeg'
+        NORMAL = './assets/image/NORMAL2-IM-1440-0001.jpeg',
+        PNEUMONIA = './assets/image/person1951_bacteria_4882.jpeg'
     )
     
     if selected_class:
