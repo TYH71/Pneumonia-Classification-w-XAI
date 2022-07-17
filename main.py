@@ -124,7 +124,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     )
 
 @st.cache
-def generate_img_boundary(explanation, positive, max_feature):
+def generate_img_boundary(explanation, positive, max_features):
     color = np.array([0, 255, 0] if positive else [255, 0, 0]) / 255.
     temp, mask = explanation.get_image_and_mask(
         explanation.top_labels[0], 
@@ -182,27 +182,10 @@ if __name__ == '__main__':
         # positive explanations
         with col2:
             pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features)
-            # pos_temp, pos_mask = explanation.get_image_and_mask(
-            #     explanation.top_labels[0], 
-            #     positive_only=True, 
-            #     negative_only=False, 
-            #     num_features=max_features, 
-            #     hide_rest=False
-            # )
-            # pos_img_boundary = mark_boundaries(pos_temp/255.0, pos_mask, color=np.array([0, 255, 0])/255.)
             st.image(pos_img_boundary, caption="Positive Explanation; Predicted: {}".format(classes[explanation.top_labels[0]]))
             
         # negative explanations
         with col3:
-            neg_img_boundary = generate_img_boundary(explanation, positive=False, max_feature=max_features)
-            
-            # neg_temp, neg_mask = explanation.get_image_and_mask(
-            #     explanation.top_labels[0], 
-            #     positive_only=False, 
-            #     negative_only=True, 
-            #     num_features=max_features, 
-            #     hide_rest=False
-            # )
-            # neg_img_boundary = mark_boundaries(neg_temp/255.0, neg_mask, color=np.array([255, 0, 0])/255.)
+            neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features)
             st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(classes[explanation.top_labels[0]]))
       
