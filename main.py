@@ -150,10 +150,8 @@ if __name__ == '__main__':
             img = get_image(path=selected_path)
             st.image(img, caption="Ground Truth: {}".format(selected_class), use_column_width=True)
             
-        # running explanation
-        explanation = run_explanation(img)    
-        
-        st.write(explanation.top_labels[0])
+            # running explanation
+            explanation = run_explanation(img)    
         
         # positive explanations
         with col2:
