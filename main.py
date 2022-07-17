@@ -26,6 +26,7 @@ st.set_page_config(
     initial_sidebar_state='expanded',
 )
 
+@st.cache
 def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     """
     It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
@@ -108,7 +109,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         batch_predict, # inference function
         top_labels = 2,
         random_seed = 42,
-        num_samples = 1000 # number of images that will be sent to classification function
+        num_samples = 100 # number of images that will be sent to classification function
     )
 
 if __name__ == '__main__':
