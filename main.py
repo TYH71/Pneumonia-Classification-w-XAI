@@ -206,7 +206,6 @@ if __name__ == '__main__':
             if selected_case not in st.session_state:
                 st.session_state[selected_case] = copy.deepcopy(run_explanation(img))
             assert st.session_state[selected_case] is not None, "Explanation not found!"
-            print('Session State', st.session_state[selected_case], sep='\n')
             explanation = st.session_state[selected_case]
             pred_class = classes[explanation.top_labels[0]]
 
