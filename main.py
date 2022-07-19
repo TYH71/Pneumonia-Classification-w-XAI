@@ -84,7 +84,7 @@ def get_preprocess_transform():
         T.Normalize(**norm_cfg)
     ])
     
-@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def batch_predict(images):
     """
     > It takes a list of images, preprocesses them, and then runs them through the model to get a
@@ -105,7 +105,7 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
@@ -123,7 +123,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         num_samples = 1000 # number of images that will be sent to classification function
     )
 
-@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
     """
     It takes an explanation object, a boolean indicating whether we want to see positive or negative
