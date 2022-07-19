@@ -19,7 +19,6 @@ from torchinfo import summary
 # import lime modules
 from lime import lime_image
 
-@st.cache
 def seed_everything(seed=42):
     """
     > It sets the seed for the random number generator in Python, NumPy, and PyTorch
@@ -63,7 +62,6 @@ def get_image(path):
         with Image.open(f) as img:
             return img.convert('RGB')
 
-@st.cache
 def get_pil_transform(): 
     """
     > It takes an image, resizes it to 256x256, and then crops it to 224x224
@@ -73,8 +71,7 @@ def get_pil_transform():
         T.Resize((256, 256)),
         T.CenterCrop(224)
     ])
-    
-@st.cache
+
 def get_preprocess_transform():
     """
     It takes an image as input, converts it to a tensor, and normalizes it
@@ -125,7 +122,6 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         num_samples = 1000 # number of images that will be sent to classification function
     )
 
-@st.cache
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
     """
     It takes an explanation object, a boolean indicating whether we want to see positive or negative
@@ -150,6 +146,8 @@ def generate_img_boundary(explanation, positive, max_features, hide_rest):
     img_boundary = mark_boundaries(temp/255.0, mask, color=color)
     return img_boundary
     
+# A common idiom in Python to use `if __name__ == '__main__':` to guard the code that parses command
+# line arguments and invokes the main function.
 if __name__ == '__main__':
     # Setting the page title, icon, layout, and initial sidebar state.
     st.set_page_config(
