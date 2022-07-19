@@ -19,12 +19,6 @@ from torchinfo import summary
 # import lime modules
 from lime import lime_image
 
-# Setting seed
-seed = 42
-torch.manual_seed(seed)
-random.seed(seed)
-np.random.seed(seed)
-
 # Setting the page title, icon, layout, and initial sidebar state.
 st.set_page_config(
     page_title='XAI',
@@ -138,7 +132,8 @@ def generate_img_boundary(explanation, positive, max_features, hide_rest):
     return img_boundary
     
 if __name__ == '__main__':
-    # pre-set variabel
+    # pre-set variable
+    seed = seed_everything(seed=42)
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
