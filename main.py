@@ -142,8 +142,8 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         batch_predict, # inference function
         top_labels = 2,
         random_seed = seed,
-        batch_size = 32,
-        num_samples = 250 # number of images that will be sent to classification function
+        batch_size = 16,
+        num_samples = 100 # number of images that will be sent to classification function
     )
 
 # @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
