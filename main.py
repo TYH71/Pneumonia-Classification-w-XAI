@@ -135,6 +135,18 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
 
 @st.cache
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
+    """
+    It takes an explanation object, a boolean indicating whether we want to see positive or negative
+    features, the maximum number of features to show, and a boolean indicating whether we want to hide
+    the rest of the image. It then returns an image with the boundaries of the features highlighted
+    
+    :param explanation: the explanation object returned by the explainer
+    :param positive: True if we want to see the positive features, False if we want to see the negative
+    features
+    :param max_features: The maximum number of features to show
+    :param hide_rest: If True, the rest of the image that doesn't pertain to the explanation will be
+    hidden
+    """
     color = np.array([0, 255, 0] if positive else [255, 0, 0]) / 255.
     temp, mask = explanation.get_image_and_mask(
         explanation.top_labels[0], 
