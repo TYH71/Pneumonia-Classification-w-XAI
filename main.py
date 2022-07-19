@@ -28,6 +28,21 @@ st.set_page_config(
 )
 
 @st.cache
+def seed_everything(seed=42):
+    """
+    > It sets the seed for the random number generator in Python, NumPy, and PyTorch
+    
+    :param seed: the random seed to use for the random number generator, defaults to 42 (optional)
+    :return: The seed value
+    """
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    return seed
+
+@st.cache
 def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     """
     It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
