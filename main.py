@@ -189,8 +189,8 @@ if __name__ == '__main__':
     preprocess_transform = get_preprocess_transform()
     image_path = {
         "PNEUMONIA": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
-        "NORMAL": './assets/imageNORMAL/NORMAL/NORMAL2-IM-1427-0001.jpeg',
-        "NORMAL (False Positive)": "./assets/image/NORMAL/NORMAL/NORMAL2-IM-1436-0001.jpeg"
+        "NORMAL": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
+        "NORMAL (False Positive)": "./assets/image/NORMAL/NORMAL2-IM-1436-0001.jpeg"
     }
     
     # Title
