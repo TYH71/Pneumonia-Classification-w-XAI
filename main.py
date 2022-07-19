@@ -19,14 +19,6 @@ from torchinfo import summary
 # import lime modules
 from lime import lime_image
 
-# Setting the page title, icon, layout, and initial sidebar state.
-st.set_page_config(
-    page_title='XAI',
-    page_icon='📷',
-    layout='wide',
-    initial_sidebar_state='expanded',
-)
-
 @st.cache
 def seed_everything(seed=42):
     """
@@ -159,6 +151,14 @@ def generate_img_boundary(explanation, positive, max_features, hide_rest):
     return img_boundary
     
 if __name__ == '__main__':
+    # Setting the page title, icon, layout, and initial sidebar state.
+    st.set_page_config(
+        page_title='XAI',
+        page_icon='📷',
+        layout='wide',
+        initial_sidebar_state='expanded',
+    )
+    
     # pre-set variable
     seed = seed_everything(seed=42)
     classes = ["NORMAL", "PNEUMONIA"]
@@ -195,6 +195,7 @@ if __name__ == '__main__':
         selected_path = image_path[selected_case]
         
         col1, col2, col3 = st.columns(3)
+        # original image and ground truth
         with col1:
             img = get_image(path=selected_path)
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
