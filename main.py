@@ -36,7 +36,7 @@ def seed_everything(seed=42):
     return seed
 
 @st.cache
-def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
+def load_model(model='mobilenetv3', weights_path: str = 'assets/weights/mobilenetv3_best_weights.pth'):
     """
     It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
     and loads the weights from the file specified by the weights_path parameter
@@ -45,13 +45,31 @@ def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     :type weights_path: str (optional)
     :return: A model with the weights loaded from the path.
     """
-    model_ft = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
-    num_ftrs = model_ft.fc.in_features
-    # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
-    model_ft.fc = nn.Linear(num_ftrs, 2)
-    model_ft.load_state_dict(torch.load(weights_path))
-    return model_ft
+    
+    if model == 'resnet18':
+        model_ft = models.resnet18()
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc = nn.Linear(num_ftrs, 2)
+        model_ft.load_state_dict(torch.load(weights_path))
+        return model_ft
+    
+    elif model == 'efficientnetb1':
+        model_ft = models.efficientnet_b1()
+        num_ftrs = model_ft.classifier[-1].in_features
+        # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
+        model_ft.classifier[-1] = nn.Linear(num_ftrs, 2)
+        model_ft.load_state_dict(torch.load(weights_path))
+        return model_ft
+    
+    elif model == 'mobilenetv3':
+        model_ft = models.mobilenet_v3_large(weights=models.MobileNet_V3_Large_Weights.IMAGENET1K_V2)
+        num_ftrs = model_ft.classifier[-1].in_features
+        # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
+        model_ft.classifier[-1] = nn.Linear(num_ftrs, 2)
+        model_ft.load_state_dict(torch.load(weights_path))
+        return model_ft
 
+@st.cache
 def get_image(path):
     """
     It opens the image file, converts it to RGB, and returns the image
@@ -85,8 +103,9 @@ def get_preprocess_transform():
         T.ToTensor(),
         T.Normalize(**norm_cfg)
     ])
-    
-# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+
+# bug: removed cache because it was causing memory to overload
+# run_explanation() runs batch_predict() multiple times, which causes memory to overload
 def batch_predict(images):
     """
     > It takes a list of images, preprocesses them, and then runs them through the model to get a
@@ -107,7 +126,9 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-@st.cache(ttl=1*3600) # objects in cache are removed after 1 hour
+# objects in cache are removed after 1 hour
+# explanations are removed after each session, so cache doesn't require to persist that long
+@st.cache(ttl=1*3600)
 def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
@@ -167,9 +188,9 @@ if __name__ == '__main__':
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
     image_path = {
-        "PNEUMONIA": './assets/image/person1951_bacteria_4882.jpeg',
-        "NORMAL": './assets/image/NORMAL2-IM-1440-0001.jpeg',
-        "NORMAL (False Negative)": "./assets/image/NORMAL2-IM-1427-0001.jpeg"
+        "PNEUMONIA": 'assets\\image\\PNEUMONIA\\person1946_bacteria_4874.jpeg',
+        "NORMAL": 'assets\\image\\NORMAL\\NORMAL\\NORMAL2-IM-1427-0001.jpeg',
+        "NORMAL (False Positive)": "assets\\image\\NORMAL\\NORMAL\\NORMAL2-IM-1436-0001.jpeg"
     }
     
     # Title
