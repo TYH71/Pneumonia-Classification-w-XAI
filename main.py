@@ -19,18 +19,20 @@ from torchinfo import summary
 # import lime modules
 from lime import lime_image
 
-# Setting seed
-torch.manual_seed(42)
-random.seed(42)
-np.random.seed(42)
-
-# Setting the page title, icon, layout, and initial sidebar state.
-st.set_page_config(
-    page_title='XAI',
-    page_icon='📷',
-    layout='wide',
-    initial_sidebar_state='expanded',
-)
+@st.cache
+def seed_everything(seed=42):
+    """
+    > It sets the seed for the random number generator in Python, NumPy, and PyTorch
+    
+    :param seed: the random seed to use for the random number generator, defaults to 42 (optional)
+    :return: The seed value
+    """
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    return seed
 
 @st.cache
 def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
@@ -118,13 +120,25 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         np.array(pill_transf(img)),
         batch_predict, # inference function
         top_labels = 2,
-        random_seed = 42,
+        random_seed = seed,
         batch_size = 32,
         num_samples = 1000 # number of images that will be sent to classification function
     )
 
 @st.cache
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
+    """
+    It takes an explanation object, a boolean indicating whether we want to see positive or negative
+    features, the maximum number of features to show, and a boolean indicating whether we want to hide
+    the rest of the image. It then returns an image with the boundaries of the features highlighted
+    
+    :param explanation: the explanation object returned by the explainer
+    :param positive: True if we want to see the positive features, False if we want to see the negative
+    features
+    :param max_features: The maximum number of features to show
+    :param hide_rest: If True, the rest of the image that doesn't pertain to the explanation will be
+    hidden
+    """
     color = np.array([0, 255, 0] if positive else [255, 0, 0]) / 255.
     temp, mask = explanation.get_image_and_mask(
         explanation.top_labels[0], 
@@ -137,18 +151,33 @@ def generate_img_boundary(explanation, positive, max_features, hide_rest):
     return img_boundary
     
 if __name__ == '__main__':
+    # Setting the page title, icon, layout, and initial sidebar state.
+    st.set_page_config(
+        page_title='XAI',
+        page_icon='📷',
+        layout='wide',
+        initial_sidebar_state='expanded',
+    )
+    
+    # pre-set variable
+    seed = seed_everything(seed=42)
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
+    image_path = {
+        "PNEUMONIA": './assets/image/person1951_bacteria_4882.jpeg',
+        "NORMAL": './assets/image/NORMAL2-IM-1440-0001.jpeg',
+        "NORMAL (False Negative)": "./assets/image/NORMAL2-IM-1427-0001.jpeg"
+    }
     
+    # Title
     st.title("Model Agnostic w/ LIME")
-    
     st.info("LIME (Local Interpretable Model-Agnostic Explanations) is an algorithm that can explain individual predictions of any black-box classifier or regressor, by approximateing it locally with an interpretable method.")
     
     # Creating a sidebar.
     with st.sidebar:
         st.header('Parameters Settings')
-        selected_class = st.selectbox("Select Class", ['PNEUMONIA', 'NORMAL'])
+        selected_case = st.selectbox("Select Class", image_path.keys())
         max_features = st.slider("Max Features", 1, 10, 5)
         hide_rest = st.select_slider("Hide Rest", [False, True])
     
@@ -162,20 +191,14 @@ if __name__ == '__main__':
             print(e)
             st.error("Model not loaded!\n{}".format(e))
 
-
-    image_path = dict(
-        NORMAL = './assets/image/NORMAL2-IM-1440-0001.jpeg',
-        PNEUMONIA = './assets/image/person1951_bacteria_4882.jpeg'
-    )
-    
-    if selected_class:
-        selected_path = image_path[selected_class]
+    if selected_case:
+        selected_path = image_path[selected_case]
         
         col1, col2, col3 = st.columns(3)
-        
+        # original image and ground truth
         with col1:
             img = get_image(path=selected_path)
-            st.image(img, caption="Ground Truth: {}".format(selected_class), use_column_width=True)
+            st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
             
             # running explanation
             explanation = run_explanation(img)    
@@ -189,4 +212,3 @@ if __name__ == '__main__':
         with col3:
             neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
             st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(classes[explanation.top_labels[0]]), use_column_width=True)
-      
