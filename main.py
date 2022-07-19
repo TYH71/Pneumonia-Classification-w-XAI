@@ -20,6 +20,7 @@ from torchinfo import summary
 # import lime modules
 from lime import lime_image
 
+@st.cache
 def seed_everything(seed=42):
     """
     > It sets the seed for the random number generator in Python, NumPy, and PyTorch
@@ -34,7 +35,7 @@ def seed_everything(seed=42):
     torch.backends.cudnn.deterministic = True
     return seed
 
-@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+@st.cache
 def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     """
     It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
@@ -51,7 +52,6 @@ def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     model_ft.load_state_dict(torch.load(weights_path))
     return model_ft
 
-@st.cache(ttl=1*3600) # objects in cache are removed after 1 hours
 def get_image(path):
     """
     It opens the image file, converts it to RGB, and returns the image
@@ -63,6 +63,7 @@ def get_image(path):
         with Image.open(f) as img:
             return img.convert('RGB')
 
+@st.cache # only loading once
 def get_pil_transform(): 
     """
     > It takes an image, resizes it to 256x256, and then crops it to 224x224
@@ -73,6 +74,7 @@ def get_pil_transform():
         T.CenterCrop(224)
     ])
 
+@st.cache # only loading once
 def get_preprocess_transform():
     """
     It takes an image as input, converts it to a tensor, and normalizes it
@@ -105,7 +107,7 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
+@st.cache(ttl=1*3600) # objects in cache are removed after 1 hour
 def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
