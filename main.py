@@ -6,6 +6,7 @@ from PIL import Image
 from skimage.segmentation import mark_boundaries
 import os
 import random
+import copy
 
 # import torch modules
 import torch
@@ -33,7 +34,7 @@ def seed_everything(seed=42):
     torch.backends.cudnn.deterministic = True
     return seed
 
-@st.cache
+@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     """
     It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
@@ -50,7 +51,7 @@ def load_model(weights_path: str = 'assets/weights/best_weights.pth'):
     model_ft.load_state_dict(torch.load(weights_path))
     return model_ft
 
-@st.cache
+@st.cache(ttl=1*3600) # objects in cache are removed after 1 hours
 def get_image(path):
     """
     It opens the image file, converts it to RGB, and returns the image
@@ -83,7 +84,7 @@ def get_preprocess_transform():
         T.Normalize(**norm_cfg)
     ])
     
-@st.cache
+@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def batch_predict(images):
     """
     > It takes a list of images, preprocesses them, and then runs them through the model to get a
@@ -104,7 +105,7 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-@st.cache
+@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
@@ -122,7 +123,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         num_samples = 1000 # number of images that will be sent to classification function
     )
 
-@st.cache
+@st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
     """
     It takes an explanation object, a boolean indicating whether we want to see positive or negative
@@ -168,7 +169,6 @@ if __name__ == '__main__':
         "NORMAL": './assets/image/NORMAL2-IM-1440-0001.jpeg',
         "NORMAL (False Negative)": "./assets/image/NORMAL2-IM-1427-0001.jpeg"
     }
-    explanations_dict = {k: None for k in image_path.keys()}
     
     # Title
     st.title("Model Agnostic w/ LIME")
@@ -200,18 +200,22 @@ if __name__ == '__main__':
             img = get_image(path=selected_path)
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
 
-            # Checking if the explanation for the selected case has already been run. 
-            # If it hasn't, it runs the
-            # explanation and stores it in the dictionary.
-            if explanations_dict[selected_case] is None:
-                explanations_dict[selected_case] = run_explanation(img)  
-        
+            # Checking if the selected case is in the session state. 
+            # If it is not, it will run the explanation and
+            # store it in the session state.
+            if selected_case not in st.session_state:
+                st.session_state[selected_case] = copy.deepcopy(run_explanation(img))
+            assert st.session_state[selected_case] is not None, "Explanation not found!"
+            print('Session State', st.session_state[selected_case], sep='\n')
+            explanation = st.session_state[selected_case]
+            pred_class = classes[explanation.top_labels[0]]
+
         # positive explanations
         with col2:
-            pos_img_boundary = generate_img_boundary(explanations_dict[selected_case], positive=True, max_features=max_features, hide_rest=hide_rest)
-            st.image(pos_img_boundary, caption="Positive Explanation; Predicted: {}".format(classes[explanations_dict[selected_case].top_labels[0]]), use_column_width=True)
+            pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
+            st.image(pos_img_boundary, caption="Positive Explanation; Predicted: {}".format(pred_class, use_column_width=True))
             
         # negative explanations
         with col3:
-            neg_img_boundary = generate_img_boundary(explanations_dict[selected_case], positive=False, max_features=max_features, hide_rest=hide_rest)
-            st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(classes[explanations_dict[selected_case].top_labels[0]]), use_column_width=True)
+            neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
+            st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(pred_class, use_column_width=True))
