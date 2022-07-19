@@ -36,16 +36,16 @@ def seed_everything(seed=42):
     return seed
 
 @st.cache
-def load_model(model='mobilenetv3', weights_path: str = 'assets/weights/mobilenetv3_best_weights.pth'):
+def load_model(model='mobilenetv3', weights_path: str = 'assets/weights/mobilenetv3_best_weights.pth'):  
     """
-    It loads a pretrained ResNet18 model, replaces the last layer with a new layer that has 2 outputs,
-    and loads the weights from the file specified by the weights_path parameter
+    It loads a pre-trained model and returns it
     
-    :param weights_path: The path to the weights file, defaults to assets/weights/best_weights.pth
+    :param model: The model to be used, defaults to mobilenetv3 (optional)
+    :param weights_path: str = 'assets/weights/mobilenetv3_best_weights.pth', defaults to
+    assets/weights/mobilenetv3_best_weights.pth
     :type weights_path: str (optional)
-    :return: A model with the weights loaded from the path.
+    :return: The model is being returned.
     """
-    
     if model == 'resnet18':
         model_ft = models.resnet18()
         num_ftrs = model_ft.fc.in_features
