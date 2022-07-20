@@ -1,4 +1,4 @@
-# import libraries
+# Importing the necessary libraries.
 import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -77,11 +77,12 @@ def get_image(path):
     :param path: The path to the image you want to classify
     :return: The image is being converted to RGB format.
     """
-    with open(os.path.abspath(path), 'rb') as f:
-        with Image.open(f) as img:
-            return img.convert('RGB')
+    return Image.open(path).convert('RGB')
+    
+    # with open(os.path.abspath(path), 'rb') as f:
+    #     with Image.open(f) as img:
+    #         return img.convert('RGB')
 
-@st.cache # only loading once
 def get_pil_transform(): 
     """
     > It takes an image, resizes it to 256x256, and then crops it to 224x224
@@ -92,7 +93,6 @@ def get_pil_transform():
         T.CenterCrop(224)
     ])
 
-@st.cache # only loading once
 def get_preprocess_transform():
     """
     It takes an image as input, converts it to a tensor, and normalizes it
