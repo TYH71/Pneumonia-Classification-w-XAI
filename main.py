@@ -191,7 +191,7 @@ if __name__ == '__main__':
     image_path = {
         "PNEUMONIA": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
         "NORMAL": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
-        "NORMAL (False Positive)": "./assets/image/NORMAL/NORMAL2-IM-1436-0001.jpeg"
+        # "NORMAL (False Positive)": "./assets/image/NORMAL/NORMAL2-IM-1436-0001.jpeg"
     }
     
     # Title
