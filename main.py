@@ -79,6 +79,7 @@ def get_image(path):
     """
     return Image.open(path).convert('RGB')
     
+    # bug: InMemoryFileManager: Missing file <cache>.jpeg 
     # with open(os.path.abspath(path), 'rb') as f:
     #     with Image.open(f) as img:
     #         return img.convert('RGB')
@@ -235,9 +236,17 @@ if __name__ == '__main__':
         # positive explanations
         with col2:
             pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
-            st.image(pos_img_boundary, caption="Positive Explanation; Predicted: {}".format(pred_class, use_column_width=True))
+            st.image(
+                pos_img_boundary, 
+                caption="Positive Explanation; Predicted: {}".format(pred_class),
+                use_column_width=True
+            )
             
         # negative explanations
         with col3:
             neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
-            st.image(neg_img_boundary, caption="Negative Explanation; Predicted: {}".format(pred_class, use_column_width=True))
+            st.image(
+                neg_img_boundary, 
+                caption="Negative Explanation; Predicted: {}".format(pred_class), 
+                use_column_width=True
+            )
