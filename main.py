@@ -224,6 +224,7 @@ if __name__ == '__main__':
         # original image and ground truth
         with col1:
             img = get_image(path=selected_path)
+            st.header("Original Image")
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
 
             # Checking if the selected case is in the session state. 
@@ -238,17 +239,19 @@ if __name__ == '__main__':
         # positive explanations
         with col2:
             pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
+            st.header("Positive Explanations")
             st.image(
                 pos_img_boundary, 
-                caption="Positive Explanation; Predicted: {}".format(pred_class),
+                caption="Predicted: {}".format(pred_class),
                 use_column_width=True
             )
             
         # negative explanations
         with col3:
             neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
+            st.header("Negative Explanation")
             st.image(
                 neg_img_boundary, 
-                caption="Negative Explanation; Predicted: {}".format(pred_class), 
+                caption="Predicted: {}".format(pred_class), 
                 use_column_width=True
             )
