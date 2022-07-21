@@ -189,8 +189,10 @@ if __name__ == '__main__':
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
     image_path = {
-        "PNEUMONIA": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
-        "NORMAL": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
+        "PNEUMONIA #1": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
+        "PNEUMONIA #2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg",
+        "NORMAL #1": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
+        "NORMAL #2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg"
         # "NORMAL (False Positive)": "assets\\image\\NORMAL\\NORMAL2-IM-1436-0001.jpeg"
     }
     
