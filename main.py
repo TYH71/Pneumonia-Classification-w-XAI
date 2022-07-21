@@ -75,7 +75,7 @@ def get_image(path):
     :param path: The path to the image you want to classify
     :return: The image is being converted to RGB format.
     """
-    return Image.open(path).convert('RGB')
+    return Image.open(path).convert('RGB').resize((256, 256))
     
     # bug: InMemoryFileManager: Missing file <cache>.jpeg 
     # with open(os.path.abspath(path), 'rb') as f:
