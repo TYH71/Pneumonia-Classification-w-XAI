@@ -105,6 +105,7 @@ def get_preprocess_transform():
 
 # bug: removed cache because it was causing memory to overload
 # run_explanation() runs batch_predict() multiple times, which causes memory to overload
+@st.cache(ttl=1*3600)
 def batch_predict(images):
     """
     > It takes a list of images, preprocesses them, and then runs them through the model to get a
@@ -143,7 +144,7 @@ def run_explanation(img, explainer=None):
         batch_predict, # inference function
         top_labels = 2,
         random_seed = seed,
-        batch_size = 16,
+        batch_size = 100,
         distance_metric='l2',
         num_samples = 100 # number of images that will be sent to classification function
     )
