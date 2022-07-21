@@ -129,7 +129,7 @@ def batch_predict(images):
 # objects in cache are removed after 1 hour
 # explanations are removed after each session, so cache doesn't require to persist that long
 @st.cache(ttl=1*3600)
-def run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)):
+def run_explanation(img, explainer=None):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
     explanations for the image.
@@ -137,6 +137,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selecti
     :param img: the image to be explained
     :param explainer: the explainer object. We'll use the default LIMEImageExplainer
     """
+    assert explainer is not None, "explainer is not defined"
     return explainer.explain_instance(
         np.array(pill_transf(img)),
         batch_predict, # inference function
@@ -231,7 +232,7 @@ if __name__ == '__main__':
             # If it is not, it will run the explanation and
             # store it in the session state.
             if selected_case not in st.session_state:
-                st.session_state[selected_case] = copy.deepcopy(run_explanation(img))
+                st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
             assert st.session_state[selected_case] is not None, "Explanation not found!"
             explanation = st.session_state[selected_case]
             pred_class = classes[explanation.top_labels[0]]
