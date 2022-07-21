@@ -19,7 +19,7 @@ from torchinfo import summary
 from lime import lime_image
 
 @st.cache
-def seed_everything(seed=42):
+def seed_everything(seed=0):
     """
     > It sets the seed for the random number generator in Python, NumPy, and PyTorch
     
@@ -143,6 +143,7 @@ def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
         top_labels = 2,
         random_seed = seed,
         batch_size = 16,
+        distance_metric='l2',
         num_samples = 100 # number of images that will be sent to classification function
     )
 
@@ -183,7 +184,7 @@ if __name__ == '__main__':
     )
     
     # pre-set variable
-    seed = seed_everything(seed=42)
+    seed = seed_everything(seed=0)
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
