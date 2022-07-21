@@ -129,7 +129,7 @@ def batch_predict(images):
 # objects in cache are removed after 1 hour
 # explanations are removed after each session, so cache doesn't require to persist that long
 @st.cache(ttl=1*3600)
-def run_explanation(img, explainer=lime_image.LimeImageExplainer()):
+def run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
     explanations for the image.
