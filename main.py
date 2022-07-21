@@ -1,6 +1,5 @@
 # Importing the necessary libraries.
 import numpy as np
-import matplotlib.pyplot as plt
 import streamlit as st
 from PIL import Image
 from skimage.segmentation import mark_boundaries
@@ -12,7 +11,6 @@ import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchvision
 from torchvision import models
 from torchvision import transforms as T
 from torchinfo import summary
@@ -31,8 +29,8 @@ def seed_everything(seed=42):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
+    torch.cuda.manual_seed(seed) # for pytorch
+    torch.backends.cudnn.deterministic = True # for pytorch
     return seed
 
 @st.cache
@@ -62,7 +60,7 @@ def load_model(model='mobilenetv3', weights_path: str = 'assets/weights/mobilene
         return model_ft
     
     elif model == 'mobilenetv3':
-        model_ft = models.mobilenet_v3_large(weights=models.MobileNet_V3_Large_Weights.IMAGENET1K_V2)
+        model_ft = models.mobilenet_v3_large()
         num_ftrs = model_ft.classifier[-1].in_features
         # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
         model_ft.classifier[-1] = nn.Linear(num_ftrs, 2)
@@ -120,6 +118,7 @@ def batch_predict(images):
     batch = torch.stack(tuple(preprocess_transform(i) for i in images), dim=0)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print("using device:", device)
     model.to(device)
     batch = batch.to(device)
     
