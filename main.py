@@ -143,7 +143,7 @@ def run_explanation(img, explainer=None):
         batch_predict, # inference function
         top_labels = 2,
         random_seed = seed,
-        batch_size = 32,
+        batch_size = 4,
         distance_metric='l2',
         num_samples = 100 # number of images that will be sent to classification function
     )
