@@ -258,4 +258,3 @@ if __name__ == '__main__':
                 caption="Predicted: {}".format(pred_class), 
                 use_column_width=True
             )
-        st.write(neg_img_boundary.shape)
