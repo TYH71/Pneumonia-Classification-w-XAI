@@ -232,7 +232,7 @@ if __name__ == '__main__':
             # If it is not, it will run the explanation and
             # store it in the session state.
             if selected_case not in st.session_state:
-                print("session state:", st.selected_case)
+                print("session state:", selected_case)
                 st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
             assert st.session_state[selected_case] is not None, "Explanation not found!"
             explanation = st.session_state[selected_case]
@@ -251,7 +251,6 @@ if __name__ == '__main__':
         # negative explanations
         with col3:
             neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
-            print(neg_img_boundary)
             st.subheader("Negative Explanation")
             st.image(
                 neg_img_boundary, 
