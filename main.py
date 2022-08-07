@@ -6,6 +6,7 @@ from skimage.segmentation import mark_boundaries
 import os
 import random
 import copy
+import glob
 
 # import torch modules
 import torch
@@ -19,7 +20,7 @@ from torchinfo import summary
 from lime import lime_image
 
 @st.cache
-def seed_everything(seed=0):
+def seed_everything(seed=42):
     """
     > It sets the seed for the random number generator in Python, NumPy, and PyTorch
     
@@ -185,13 +186,16 @@ if __name__ == '__main__':
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
-    image_path = {
-        "PNEUMONIA_1": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
-        "PNEUMONIA_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg",
-        "NORMAL_1": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
-        # bug one: should no be using pneumonia case
-        # "NORMAL_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg"
-    }
+    
+    
+    image_path = {os.path.basename(fp):fp for fp in glob.glob("./assets/image/*/*.jpeg")}
+    
+    # image_path = {
+    #     "PNEUMONIA_1": './assets/image/PNEUMONIA/person1949_bacteria_4880.jpeg',
+    #     "PNEUMONIA_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg",
+    #     "NORMAL_1": './assets/image/NORMAL/NORMAL2-IM-1438-0001.jpeg',
+    #     "NORMAL_2": 
+    # }
     
     # Title
     st.title("Model Agnostic w/ LIME")
@@ -224,16 +228,16 @@ if __name__ == '__main__':
             st.subheader("Original Image")
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
 
-            # Checking if the selected case is in the session state. 
-            # If it is not, it will run the explanation and
-            # store it in the session state.
-            print("session state:", selected_case)
-            if selected_case not in st.session_state:
-                st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
-            assert st.session_state[selected_case] is not None, "Explanation not found!"
-            assert selected_case in st.session_state.keys(), "Explanation not found!"
-            explanation = st.session_state[selected_case]
-            pred_class = classes[explanation.top_labels[0]]
+        # Checking if the selected case is in the session state. 
+        # If it is not, it will run the explanation and
+        # store it in the session state.
+        print("session state:", selected_case)
+        if selected_case not in st.session_state:
+            st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
+        assert st.session_state[selected_case] is not None, "Explanation not found!"
+        assert selected_case in st.session_state.keys(), "Explanation not found!"
+        explanation = st.session_state[selected_case]
+        pred_class = classes[explanation.top_labels[0]]
 
         # positive explanations
         with col2:
@@ -254,3 +258,4 @@ if __name__ == '__main__':
                 caption="Predicted: {}".format(pred_class), 
                 use_column_width=True
             )
+        st.write(neg_img_boundary.shape)
