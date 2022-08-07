@@ -90,7 +90,7 @@ def get_pil_transform():
     """
     return T.Compose([
         T.Resize((256, 256)),
-        T.CenterCrop(224)
+        # T.CenterCrop(224)
     ])
 
 def get_preprocess_transform():
@@ -222,11 +222,25 @@ if __name__ == '__main__':
         selected_path = image_path[selected_case]
         
         col1, col2, col3 = st.columns(3)
+        col4, col5, col6 = st.columns(3)
+        
         # original image and ground truth
         with col1:
             img = get_image(path=selected_path)
             st.subheader("Original Image")
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
+
+        # run inference on image
+        img_T = preprocess_transform(pill_transf(img))
+        preds = model(img_T.reshape(1, 3, 256, 256)).detach()
+        logits = torch.sigmoid(preds)
+        pred_idx = torch.argmax(logits)
+        conf_pneumonia, conf_normal = logits[0]
+        pred_class = classes[pred_idx]
+        
+        col4.metric(label='Predicted', value=pred_class)
+        col5.metric(label='Probability of Pneumonia', value="{:.2%}".format(conf_normal))
+        col6.metric(label='Probability of Normal', value="{:.2%}".format(conf_pneumonia))
 
         # Checking if the selected case is in the session state. 
         # If it is not, it will run the explanation and
@@ -237,7 +251,6 @@ if __name__ == '__main__':
         assert st.session_state[selected_case] is not None, "Explanation not found!"
         assert selected_case in st.session_state.keys(), "Explanation not found!"
         explanation = st.session_state[selected_case]
-        pred_class = classes[explanation.top_labels[0]]
 
         # positive explanations
         with col2:
@@ -245,7 +258,7 @@ if __name__ == '__main__':
             st.subheader("Positive Explanations")
             st.image(
                 pos_img_boundary,
-                caption="Predicted: {}".format(pred_class),
+                # caption="Predicted: {}".format(pred_class),
                 use_column_width=True
             )
             
@@ -255,6 +268,6 @@ if __name__ == '__main__':
             st.subheader("Negative Explanation")
             st.image(
                 neg_img_boundary, 
-                caption="Predicted: {}".format(pred_class), 
+                # caption="Predicted: {}".format(pred_class), 
                 use_column_width=True
             )
