@@ -126,9 +126,8 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-# objects in cache are removed after 1 hour
 # explanations are removed after each session, so cache doesn't require to persist that long
-@st.cache(ttl=1*3600)
+@st.cache()
 def run_explanation(img, explainer=None):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
