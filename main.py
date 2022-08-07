@@ -251,7 +251,6 @@ if __name__ == '__main__':
         with col3:
             neg_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
             print(neg_img_boundary)
-            st.write(neg_img_boundary)
             st.subheader("Negative Explanation")
             st.image(
                 neg_img_boundary, 
