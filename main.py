@@ -126,8 +126,6 @@ def batch_predict(images):
     probs = F.softmax(logits, dim=1)
     return probs.detach().cpu().numpy()
 
-# explanations are removed after each session, so cache doesn't require to persist that long
-@st.cache()
 def run_explanation(img, explainer=None):
     """
     `run_explanation` takes an image, and returns a `LimeImageExplanation` object, which contains the
@@ -147,7 +145,6 @@ def run_explanation(img, explainer=None):
         num_samples = 100 # number of images that will be sent to classification function
     )
 
-# @st.cache(ttl=12*3600) # objects in cache are removed after 12 hours
 def generate_img_boundary(explanation, positive, max_features, hide_rest):
     """
     It takes an explanation object, a boolean indicating whether we want to see positive or negative
