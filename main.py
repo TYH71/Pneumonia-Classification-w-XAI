@@ -193,8 +193,8 @@ if __name__ == '__main__':
         "PNEUMONIA_1": './assets/image/PNEUMONIA/person1946_bacteria_4874.jpeg',
         "PNEUMONIA_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg",
         "NORMAL_1": './assets/image/NORMAL/NORMAL2-IM-1440-0001.jpeg',
-        "NORMAL_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg"
-        # "NORMAL (False Positive)": "assets\\image\\NORMAL\\NORMAL2-IM-1436-0001.jpeg"
+        # bug one: should no be using pneumonia case
+        # "NORMAL_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg"
     }
     
     # Title
@@ -235,18 +235,16 @@ if __name__ == '__main__':
                 print("session state:", selected_case)
                 st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
             assert st.session_state[selected_case] is not None, "Explanation not found!"
+            assert selected_case in st.session_state.keys(), "Explanation not found!"
             explanation = st.session_state[selected_case]
             pred_class = classes[explanation.top_labels[0]]
-            print(st.session_state)
-            # test case for session state
-            assert selected_case in st.session_state.keys(), "Explanation not found!"
 
         # positive explanations
         with col2:
-            pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
+            pos_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
             st.subheader("Positive Explanations")
             st.image(
-                pos_img_boundary, 
+                pos_img_boundary,
                 caption="Predicted: {}".format(pred_class),
                 use_column_width=True
             )
