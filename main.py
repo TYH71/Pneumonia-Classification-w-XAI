@@ -231,6 +231,7 @@ if __name__ == '__main__':
             # Checking if the selected case is in the session state. 
             # If it is not, it will run the explanation and
             # store it in the session state.
+            print(st.session_state)
             if selected_case not in st.session_state:
                 print("session state:", selected_case)
                 st.session_state[selected_case] = copy.deepcopy(run_explanation(img, explainer=lime_image.LimeImageExplainer(feature_selection='auto', random_state=seed)))
