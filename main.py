@@ -241,7 +241,7 @@ if __name__ == '__main__':
 
         # positive explanations
         with col2:
-            pos_img_boundary = generate_img_boundary(explanation, positive=False, max_features=max_features, hide_rest=hide_rest)
+            pos_img_boundary = generate_img_boundary(explanation, positive=True, max_features=max_features, hide_rest=hide_rest)
             st.subheader("Positive Explanations")
             st.image(
                 pos_img_boundary,
