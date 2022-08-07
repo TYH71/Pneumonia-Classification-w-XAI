@@ -179,6 +179,10 @@ if __name__ == '__main__':
         page_icon='📷',
         layout='wide',
         initial_sidebar_state='expanded',
+        menu_items={
+            "About": "# This is a project to demonstrate the use of XAI",
+            "Get Help": "https://github.com/TYH71/Pneumonia-Classification-w-XAI"
+        }
     )
     
     # pre-set variable
