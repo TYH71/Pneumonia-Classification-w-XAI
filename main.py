@@ -254,3 +254,4 @@ if __name__ == '__main__':
                 caption="Predicted: {}".format(pred_class), 
                 use_column_width=True
             )
+            st.pyplot(plt.imshow(neg_img_boundary))
