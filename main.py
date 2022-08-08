@@ -225,7 +225,7 @@ if __name__ == '__main__':
         # run inference on image
         img_T = preprocess_transform(pill_transf(img)).unsqueeze(0)
         preds = model(img_T).detach()
-        logits = F.softmax(preds)
+        logits = F.softmax(preds, dim=1)
         pred_idx = torch.argmax(logits)
         conf_pneumonia, conf_normal = logits[0]
         pred_class = classes[pred_idx]
