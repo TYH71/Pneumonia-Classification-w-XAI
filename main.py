@@ -189,13 +189,6 @@ if __name__ == '__main__':
     
     image_path = {os.path.basename(fp):fp for fp in glob.glob("./assets/image/*/*.jpeg")}
     
-    # image_path = {
-    #     "PNEUMONIA_1": './assets/image/PNEUMONIA/person1949_bacteria_4880.jpeg',
-    #     "PNEUMONIA_2": "./assets/image/PNEUMONIA/person1946_bacteria_4875.jpeg",
-    #     "NORMAL_1": './assets/image/NORMAL/NORMAL2-IM-1438-0001.jpeg',
-    #     "NORMAL_2": 
-    # }
-    
     # Title
     st.title("Model Agnostic w/ LIME")
     st.info("LIME (Local Interpretable Model-Agnostic Explanations) is an algorithm that can explain individual predictions of any black-box classifier or regressor, by approximateing it locally with an interpretable method.")
@@ -227,7 +220,7 @@ if __name__ == '__main__':
         with col1:
             img = get_image(path=selected_path)
             st.subheader("Original Image")
-            st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
+            st.image(img, caption="Ground Truth: {}".format("NORMAL" if "NORMAL" in selected_case else "PNEUMONIA"), use_column_width=True)
 
         # run inference on image
         img_T = preprocess_transform(pill_transf(img)).unsqueeze(0)
