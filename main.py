@@ -185,13 +185,14 @@ if __name__ == '__main__':
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
-    
-    
     image_path = {os.path.basename(fp):fp for fp in glob.glob("./assets/image/*/*.jpeg")}
     
     # Title
     st.title("Model Agnostic w/ LIME")
-    st.info("LIME (Local Interpretable Model-Agnostic Explanations) is an algorithm that can explain individual predictions of any black-box classifier or regressor, by approximateing it locally with an interpretable method.")
+    info_path = './assets/txt/lime_info.txt'
+    assert os.path.exists(info_path), "info file not found"
+    info = open(info_path, 'r').read()
+    st.info(info)
     
     # Creating a sidebar.
     with st.sidebar:

@@ -1,0 +1,5 @@
+LIME (Local Interpretable Model-Agnostic Explanations) is an algorithm that can explain individual predictions of any black-box classifier or regressor, by approximateing it locally with an interpretable method.
+
+Green region describes the superpixels positively contributing to the prediction; regions where the model considers while running inference.
+
+Red region describes the superpixels negatively contributing to the prediction; regions where the model does not consider while running inference.
