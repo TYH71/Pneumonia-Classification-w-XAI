@@ -192,7 +192,10 @@ if __name__ == '__main__':
     info_path = './assets/txt/lime_info.txt'
     assert os.path.exists(info_path), "info file not found"
     info = open(info_path, 'r').read()
-    st.info(info)
+    # st.info(info)
+    
+    with st.expander('LIME Overview'):
+        st.info(info)
     
     # Creating a sidebar.
     with st.sidebar:
