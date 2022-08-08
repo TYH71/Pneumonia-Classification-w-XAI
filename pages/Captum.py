@@ -37,6 +37,7 @@ def seed_everything (seed=42):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
+    torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     return seed
 
@@ -122,6 +123,11 @@ if __name__ == '__main__':
     classes = ["NORMAL", "PNEUMONIA"]
     pill_transf = get_pil_transform()
     preprocess_transform = get_preprocess_transform()
+    default_cmap = LinearSegmentedColormap.from_list(
+        'custom blue', 
+        [(0, '#ffffff'), (0.25, '#000000'), (1, '#000000')], 
+        N=256
+    )
     
     image_path = {os.path.basename(fp):fp for fp in glob.glob("./assets/image/*/*.jpeg")}
     
@@ -170,5 +176,47 @@ if __name__ == '__main__':
 
         # feature attribution
         with col2:
-            st.subheader('Attribution Map')        
+            st.subheader('Attribution Map')
+            
+            # input = img_T.unsqueeze(0)
+            
+            # # attribution method - integrated gradients
+            # integrated_gradients = IntegratedGradients(model)
+            
+            # # smoothen noisy attribution using Noise Tunnel
+            # noise_tunnel = NoiseTunnel(attribution_method=integrated_gradients)
+            
+            # # creating attributions
+            # attributions_ig_nt = noise_tunnel.attribute(
+            #     input,
+            #     target=classes
+            # )
+            
+            # PLOT = viz.visualize_image_attr_multiple(
+            #     np.transpose(attributions_ig_nt.squeeze().cpu().detach().numpy(), (1,2,0)),
+            #     np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1,2,0)),
+            #     ["original_image", "heat_map"],
+            #     ["all", "positive"],
+            #     cmap=default_cmap,
+            #     show_colorbar=True
+            # )
+            
+            # st.pyplot(PLOT)
         
+            # # get attributions
+            # integrated_gradients = IntegratedGradients(model)
+            # attributions_ig = integrated_gradients.attribute(input, target=classes, n_steps=200)
+            
+            # # smoothen noisy attributions
+            # noise_tunnel = NoiseTunnel(integrated_gradients)
+            
+            # attributions_ig_nt = noise_tunnel.attribute(input, nt_samples=10, nt_type='smoothgrad_sq', target=classes)
+            # PLOT = viz.visualize_image_attr_multiple(np.transpose(
+            #     attributions_ig_nt.squeeze().cpu().detach().numpy(), (1,2,0)),
+            #     np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1,2,0)),
+            #     ["original_image", "heat_map"],
+            #     ["all", "positive"],
+            #     cmap=default_cmap,
+            #     show_colorbar=True
+            # )
+            # st.pyplot(PLOT)
