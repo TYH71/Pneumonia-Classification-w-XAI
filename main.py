@@ -230,8 +230,8 @@ if __name__ == '__main__':
             st.image(img, caption="Ground Truth: {}".format(selected_case), use_column_width=True)
 
         # run inference on image
-        img_T = preprocess_transform(pill_transf(img))
-        preds = model(img_T.reshape(1, 3, 256, 256)).detach()
+        img_T = preprocess_transform(pill_transf(img)).unsqueeze(0)
+        preds = model(img_T).detach()
         logits = F.softmax(preds)
         pred_idx = torch.argmax(logits)
         conf_pneumonia, conf_normal = logits[0]
