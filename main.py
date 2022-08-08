@@ -30,6 +30,7 @@ def seed_everything(seed=42):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
+    torch.manual_seed(seed)
     torch.cuda.manual_seed(seed) # for pytorch
     torch.backends.cudnn.deterministic = True # for pytorch
     return seed
@@ -76,12 +77,7 @@ def get_image(path):
     :param path: The path to the image you want to classify
     :return: The image is being converted to RGB format.
     """
-    return Image.open(path).convert('RGB').resize((256, 256))
-    
-    # bug: InMemoryFileManager: Missing file <cache>.jpeg 
-    # with open(os.path.abspath(path), 'rb') as f:
-    #     with Image.open(f) as img:
-    #         return img.convert('RGB')
+    return Image.open(path).convert('RGB').resize((224, 224))
 
 def get_pil_transform(): 
     """
@@ -89,8 +85,7 @@ def get_pil_transform():
     :return: A function that takes in an PIL image and returns a transformed image.
     """
     return T.Compose([
-        T.Resize((256, 256)),
-        # T.CenterCrop(224)
+        T.Resize((224, 224)),
     ])
 
 def get_preprocess_transform():
